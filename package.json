@@ -1,0 +1,27 @@
+{
+    "name": "mergenote",
+    "version": "1.0.0",
+    "description": "Uma GitHub Action para gerar descrições automáticas de PRs",
+    "main": "src/index.js",
+    "scripts": {
+      "test": "echo \"Nenhum teste configurado\""
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/seu-usuario/MergeNote.git"
+    },
+    "keywords": [
+      "github",
+      "action",
+      "pull-request",
+      "automation",
+      "mergenote"
+    ],
+    "author": "Seu Nome",
+    "license": "MIT",
+    "dependencies": {
+      "@actions/core": "^1.10.0",
+      "@actions/github": "^5.1.1"
+    }
+  }
+  

@@ -1,0 +1,26 @@
+name: MergeNote - Descrição Automática de PR
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Instalar Dependências
+        run: npm install
+
+      - name: Gerar Descrição do PR com MergeNote
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node src/index.js

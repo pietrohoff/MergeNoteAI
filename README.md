@@ -1,7 +1,7 @@
 
-# MergeNote - Automatize as Descrições dos seus Pull Requests
+# 🤖 MergeNoteAI - Automatize as Descrições dos seus Pull Requests
 
-![MergeNote Logo](https://raw.githubusercontent.com/seu-usuario/MergeNote/main/assets/mergenote-banner.png)
+**MergeNote** é uma GitHub Action poderosa que automatiza a geração de descrições para os seus Pull Requests, garantindo que todas as informações relevantes das alterações sejam incluídas de forma consistente e padronizada. Economize tempo e melhore a qualidade das revisões de código com descrições detalhadas geradas automaticamente.
 
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/seu-usuario/MergeNote)](https://github.com/seu-usuario/MergeNote/issues)
@@ -9,7 +9,6 @@
 
 ## Índice
 
-- [Sobre o MergeNote](#sobre-o-mergenote)
 - [Funcionalidades](#funcionalidades)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação)
@@ -18,14 +17,7 @@
 - [Personalização](#personalização)
 - [Exemplo de Descrição Gerada](#exemplo-de-descrição-gerada)
 - [Contribuição](#contribuição)
-- [Roadmap](#roadmap)
 - [Licença](#licença)
-- [Contato](#contato)
-- [Agradecimentos](#agradecimentos)
-
-## Sobre o MergeNote
-
-**MergeNote** é uma GitHub Action poderosa que automatiza a geração de descrições para os seus Pull Requests, garantindo que todas as informações relevantes das alterações sejam incluídas de forma consistente e padronizada. Economize tempo e melhore a qualidade das revisões de código com descrições detalhadas geradas automaticamente.
 
 ## Funcionalidades
 
@@ -170,28 +162,9 @@ Contribuições são o coração da comunidade open-source! Se você tem sugest�
 
 Consulte o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para obter detalhes sobre o nosso código de conduta e o processo de envio de pull requests.
 
-## Roadmap
-
-- [ ] Adicionar suporte a configurações personalizadas via arquivo YAML.
-- [ ] Implementar testes automatizados.
-- [ ] Publicar a ação no GitHub Marketplace.
-- [ ] Adicionar suporte a outras plataformas de CI/CD.
-- [ ] Melhorar a documentação com tutoriais e exemplos avançados.
-
 ## Licença
 
 Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-## Contato
-
-- **Nome:** Seu Nome
-- **Email:** [seu-email@dominio.com](mailto:seu-email@dominio.com)
-- **GitHub:** [seu-usuario](https://github.com/seu-usuario)
-- **LinkedIn:** [seu-linkedin](https://www.linkedin.com/in/seu-linkedin)
-
-## Agradecimentos
-
-Agradecemos a todos os colaboradores e usuários que apoiam este projeto. Seu feedback e contribuições são inestimáveis!
 
 ---
 

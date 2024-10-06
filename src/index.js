@@ -39,13 +39,21 @@ async function run() {
 
         // Preparar o texto para a IA gerar a explicação
         const inputText = `
+        Baseado nos seguintes commits e arquivos modificados:
+
         Commits:
         ${commitMessages}
 
         Arquivos modificados:
         ${changedFiles}
 
-        Gere uma explicação amigável das mudanças realizadas neste PR.
+        Gere um resumo estruturado das modificações no seguinte formato:
+
+        Resumo:
+        [Breve resumo das modificações feitas no PR.]
+
+        Problema Resolvido:
+        [Explique o problema que foi resolvido com as modificações realizadas.]
         `;
 
         // Fazer a requisição para a API Hugging Face (sem chave)
@@ -67,9 +75,13 @@ async function run() {
         const newBody = `
                         ### Descrição Gerada pelo MergeNote com IA
 
-                        **Explicação das modificações:**
+                        **Resumo:**
 
-                        ${aiGeneratedDescription}
+                        ${aiGeneratedDescription.split("Problema Resolvido:")[0].trim()}
+
+                        **Problema Resolvido:**
+
+                        ${aiGeneratedDescription.split("Problema Resolvido:")[1]?.trim() || 'Descrição indisponível'}
 
                         **Commits neste PR:**
 

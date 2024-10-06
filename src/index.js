@@ -1,7 +1,6 @@
-// src/index.js
-
 const core = require('@actions/core');
 const github = require('@actions/github');
+const axios = require('axios');
 
 async function run() {
     try {
@@ -38,9 +37,39 @@ async function run() {
         // Gerar lista de arquivos modificados
         let changedFiles = files.map(file => `- ${file.filename}`).join('\n');
 
+        // Preparar o texto para a IA gerar a explicação
+        const inputText = `
+        Commits:
+        ${commitMessages}
+
+        Arquivos modificados:
+        ${changedFiles}
+
+        Gere uma explicação amigável das mudanças realizadas neste PR.
+        `;
+
+        // Fazer a requisição para a API Hugging Face (sem chave)
+        const response = await axios.post(
+            'https://api-inference.huggingface.co/models/gpt2',
+            {
+                inputs: inputText,
+            },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+
+        const aiGeneratedDescription = response.data[0].generated_text.trim();
+
         // Template da descrição
         const newBody = `
-                        ### Descrição Gerada pelo MergeNote
+                        ### Descrição Gerada pelo MergeNote com IA
+
+                        **Explicação das modificações:**
+
+                        ${aiGeneratedDescription}
 
                         **Commits neste PR:**
 
@@ -50,7 +79,7 @@ async function run() {
 
                         ${changedFiles}
 
-                        *Esta descrição foi gerada automaticamente pelo [MergeNote](https://github.com/pietrohoff/MergeNote).*
+                        *Esta descrição foi gerada automaticamente pelo [MergeNote](https://github.com/pietrohoff/MergeNote) utilizando IA.*
                         `;
 
         // Atualizar o PR com a nova descrição
@@ -61,7 +90,7 @@ async function run() {
             body: newBody,
         });
 
-        console.log('Descrição do PR atualizada com sucesso pelo MergeNote.');
+        console.log('Descrição do PR atualizada com sucesso pelo MergeNote com IA.');
     } catch (error) {
         core.setFailed(`Erro ao atualizar a descrição do PR: ${error.message}`);
     }

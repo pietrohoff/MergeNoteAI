@@ -55,20 +55,25 @@ async function run() {
         `;
 
         // Fazer a requisição para a API Hugging Face (sem chave)
-        const response = await axios.post(
-            'https://api-inference.huggingface.co/models/gpt2',
-            {
-                inputs: inputText,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
+        let aiGeneratedDescription = 'Descrição indisponível';
+        try {
+            const response = await axios.post(
+                'https://api-inference.huggingface.co/models/gpt2',
+                {
+                    inputs: inputText,
                 },
-            }
-        );
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
-        // Validar e limitar a resposta da IA
-        const aiGeneratedDescription = response.data[0]?.generated_text?.trim() || 'Descrição indisponível';
+            aiGeneratedDescription = response.data[0]?.generated_text?.trim() || 'Descrição indisponível';
+        } catch (error) {
+            console.log('Erro ao obter resposta da IA:', error.message);
+        }
+
         const truncatedDescription = aiGeneratedDescription.length > 1000 ? aiGeneratedDescription.slice(0, 1000) + '...' : aiGeneratedDescription;
 
         // Template da descrição

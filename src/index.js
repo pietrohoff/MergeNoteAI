@@ -24,7 +24,7 @@ async function run() {
             pull_number: prNumber,
         });
 
-        // Obter arquivos modificados
+        // Obter arquivos modificados com diff
         const { data: files } = await octokit.rest.pulls.listFiles({
             owner,
             repo,
@@ -34,20 +34,22 @@ async function run() {
         // Gerar lista de commits
         let commitMessages = commits.map(commit => `- ${commit.commit.message}`).join('\n');
 
-        // Gerar lista de arquivos modificados
-        let changedFiles = files.map(file => `- ${file.filename}`).join('\n');
+        // Obter diffs das alterações
+        let changesDescription = files
+            .map(file => `### Arquivo: ${file.filename}\nAlterações:\n${file.patch}`)
+            .join('\n\n');
 
         // Preparar o texto para a IA gerar a explicação
         const inputText = `
-        Baseado nos seguintes commits e arquivos modificados:
+        Baseado nos seguintes commits e alterações nos arquivos:
 
         Commits:
         ${commitMessages}
 
-        Arquivos modificados:
-        ${changedFiles}
+        Alterações detalhadas:
+        ${changesDescription}
 
-        Gere um resumo estruturado das modificações no seguinte formato:
+        Gere uma explicação estruturada das modificações no seguinte formato:
 
         Resumo:
         [Breve resumo das modificações feitas no PR.]
@@ -87,9 +89,9 @@ async function run() {
 
                         ${commitMessages}
 
-                        **Arquivos modificados:**
+                        **Alterações nos arquivos:**
 
-                        ${changedFiles}
+                        ${changesDescription}
 
                         *Esta descrição foi gerada automaticamente pelo [MergeNote](https://github.com/pietrohoff/MergeNote) utilizando IA.*
                         `;

@@ -1,6 +1,5 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
-const axios = require('axios');
 
 async function run() {
     try {
@@ -10,98 +9,14 @@ async function run() {
 
         const octokit = github.getOctokit(process.env.GITHUB_TOKEN);
 
-        // Obter detalhes do PR
-        const { data: pr } = await octokit.rest.pulls.get({
-            owner,
-            repo,
-            pull_number: prNumber,
-        });
+        // Teste: Atualizar o PR com uma descrição simples e fixa
+        const newBody = `
+            ### Descrição de Teste
 
-        // Obter commits do PR
-        const { data: commits } = await octokit.rest.pulls.listCommits({
-            owner,
-            repo,
-            pull_number: prNumber,
-        });
-
-        // Obter arquivos modificados com diff
-        const { data: files } = await octokit.rest.pulls.listFiles({
-            owner,
-            repo,
-            pull_number: prNumber,
-        });
-
-        // Gerar lista de commits
-        let commitMessages = commits.map(commit => `- ${commit.commit.message}`).join('\n');
-
-        // Obter diffs das alterações, limitando o tamanho se for muito grande
-        let changesDescription = files
-            .map(file => `### Arquivo: ${file.filename}\nAlterações:\n${file.patch}`)
-            .join('\n\n');
-
-        // Limitar `changesDescription` a 2000 caracteres para evitar erros de tamanho
-        if (changesDescription.length > 2000) {
-            changesDescription = changesDescription.slice(0, 2000) + '\n\n[...truncado para ajustar o limite de tamanho]';
-        }
-
-        // Preparar o texto para a IA gerar a explicação
-        const inputText = `
-        Baseado nos seguintes commits e alterações nos arquivos:
-
-        Commits:
-        ${commitMessages}
-
-        Alterações detalhadas:
-        ${changesDescription}
-
-        Gere uma explicação estruturada das modificações no seguinte formato:
-
-        Resumo:
-        [Breve resumo das modificações feitas no PR.]
-
-        Problema Resolvido:
-        [Explique o problema que foi resolvido com as modificações realizadas.]
+            Esta é uma descrição de teste para verificar se o PR é atualizado com sucesso.
         `;
 
-        // Fazer a requisição para a API Hugging Face (sem chave)
-        const response = await axios.post(
-            'https://api-inference.huggingface.co/models/gpt2',
-            {
-                inputs: inputText,
-            },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-
-        const aiGeneratedDescription = response.data[0]?.generated_text?.trim() || 'Descrição indisponível';
-
-        // Template da descrição
-        const newBody = `
-                        ### Descrição Gerada pelo MergeNote com IA
-
-                        **Resumo:**
-
-                        ${aiGeneratedDescription.split("Problema Resolvido:")[0].trim()}
-
-                        **Problema Resolvido:**
-
-                        ${aiGeneratedDescription.split("Problema Resolvido:")[1]?.trim() || 'Descrição indisponível'}
-
-                        **Commits neste PR:**
-
-                        ${commitMessages}
-
-                        **Alterações nos arquivos:**
-
-                        ${changesDescription}
-
-                        *Esta descrição foi gerada automaticamente pelo [MergeNote](https://github.com/pietrohoff/MergeNote) utilizando IA.*
-                        `;
-
-        // Atualizar o PR com a nova descrição
+        // Atualizar o PR com a nova descrição de teste
         await octokit.rest.pulls.update({
             owner,
             repo,
@@ -109,7 +24,7 @@ async function run() {
             body: newBody,
         });
 
-        console.log('Descrição do PR atualizada com sucesso pelo MergeNote com IA.');
+        console.log('Descrição de teste do PR atualizada com sucesso.');
     } catch (error) {
         core.setFailed(`Erro ao atualizar a descrição do PR: ${error.message}`);
     }

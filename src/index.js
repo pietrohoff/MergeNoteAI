@@ -34,10 +34,15 @@ async function run() {
         // Gerar lista de commits
         let commitMessages = commits.map(commit => `- ${commit.commit.message}`).join('\n');
 
-        // Obter diffs das alterações
+        // Obter diffs das alterações, limitando o tamanho se for muito grande
         let changesDescription = files
             .map(file => `### Arquivo: ${file.filename}\nAlterações:\n${file.patch}`)
             .join('\n\n');
+
+        // Limitar `changesDescription` a 2000 caracteres para evitar erros de tamanho
+        if (changesDescription.length > 2000) {
+            changesDescription = changesDescription.slice(0, 2000) + '\n\n[...truncado para ajustar o limite de tamanho]';
+        }
 
         // Preparar o texto para a IA gerar a explicação
         const inputText = `
@@ -71,7 +76,7 @@ async function run() {
             }
         );
 
-        const aiGeneratedDescription = response.data[0].generated_text.trim();
+        const aiGeneratedDescription = response.data[0]?.generated_text?.trim() || 'Descrição indisponível';
 
         // Template da descrição
         const newBody = `

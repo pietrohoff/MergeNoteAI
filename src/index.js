@@ -23,35 +23,21 @@ async function run() {
             pull_number: prNumber,
         });
 
-        // Gerar lista de commits
+        // Gerar lista de commits e arquivos alterados (nomes apenas)
         const commitMessages = commits.map(commit => `- ${commit.commit.message}`).join('\n');
+        const changedFiles = files.map(file => file.filename).join(', ');
 
-        // Obter e limitar os diffs
-        let changesDescription = files
-            .map(file => `### Arquivo: ${file.filename}\nAlterações:\n${file.patch}`)
-            .join('\n\n');
-        
-        if (changesDescription.length > 1500) {
-            changesDescription = changesDescription.slice(0, 1500) + '\n\n[...truncado para ajustar o limite de tamanho]';
-        }
-
-        // Preparar o texto para a IA gerar a explicação
+        // Preparar o texto para a IA gerar uma explicação resumida
         const inputText = `
-        Baseado nos seguintes commits e alterações nos arquivos:
+        Dado os seguintes commits e arquivos alterados:
 
         Commits:
         ${commitMessages}
 
-        Alterações detalhadas:
-        ${changesDescription}
+        Arquivos modificados:
+        ${changedFiles}
 
-        Gere uma explicação estruturada das modificações no seguinte formato:
-
-        Resumo:
-        [Breve resumo das modificações feitas no PR.]
-
-        Problema Resolvido:
-        [Explique o problema que foi resolvido com as modificações realizadas.]
+        Gere um resumo das modificações no formato de uma frase explicativa sobre o que foi alterado.
         `;
 
         // Fazer a requisição para a API Hugging Face (sem chave)
@@ -74,27 +60,21 @@ async function run() {
             console.log('Erro ao obter resposta da IA:', error.message);
         }
 
-        const truncatedDescription = aiGeneratedDescription.length > 1000 ? aiGeneratedDescription.slice(0, 1000) + '...' : aiGeneratedDescription;
-
-        // Template da descrição
+        // Template da descrição final
         const newBody = `
                         ### Descrição Gerada pelo MergeNote com IA
 
-                        **Resumo:**
+                        **Resumo das Alterações:**
 
-                        ${truncatedDescription.split("Problema Resolvido:")[0].trim()}
-
-                        **Problema Resolvido:**
-
-                        ${truncatedDescription.split("Problema Resolvido:")[1]?.trim() || 'Descrição indisponível'}
+                        ${aiGeneratedDescription}
 
                         **Commits neste PR:**
 
                         ${commitMessages}
 
-                        **Alterações nos arquivos:**
+                        **Arquivos modificados:**
 
-                        ${changesDescription}
+                        ${changedFiles}
 
                         *Esta descrição foi gerada automaticamente pelo [MergeNote](https://github.com/pietrohoff/MergeNote) utilizando IA.*
                         `;
